@@ -185,74 +185,42 @@ void div_poly(mpz_t *res, mpz_t *P, mpz_t *Q, int deg_P, int deg_Q, mpz_t mod){
 /**
  * Multiply 2 polynomials of different sizes
  * @param res Matrix to complete, initialized at 0
+ * @param P First polynomial
+ * @param Q Second polynomial
+ * @param deg_P P's degree
+ * @param deg_Q Q's degree
  */
 void mpz_mul_poly(mpz_t *res, mpz_t *P, mpz_t *Q, int deg_P, int deg_Q){
   int i, j;
-  int deg_max;
-  max(&deg_max, deg_P, deg_Q, NULL);
-  int N = deg_max+1;
-  int R = 2*N;
+  int deg_Res = deg_P+deg_Q;
   mpz_t tmp;
   mpz_init(tmp);
-  mpz_t tmp_P[deg_max+1], tmp_Q[deg_max+1];
-  mpz_t copy_tmp[R];
+  mpz_t copy_tmp[N];
 
   printf("\n*************Multiplication*************\n");
-
-  for(i=0;i<R;i++)
+	/* Init copy_tmp */
+  for(i=0;i<=deg_Res;i++)
     mpz_init(copy_tmp[i]);
-
-  /* Remplissage des polynomes temporaires */
-  for(i=0; i<=deg_max; i++){
-    if(i>deg_P){
-      mpz_init(tmp_P[deg_max-i]);
-      mpz_init_set(tmp_Q[deg_max-i], Q[deg_max-i]);
-    }
-    if(i>deg_Q){
-      mpz_init(tmp_Q[deg_max-i]);
-      mpz_init_set(tmp_P[deg_max-i], P[deg_max-i]);
-    }
-    else{
-      mpz_init_set(tmp_P[deg_max-i], P[deg_P-i]);
-      mpz_init_set(tmp_Q[deg_max-i], Q[deg_Q-i]);
-    }
-  }
-
-  printf("Polynome intermediaires prets\n");
-  print_P(tmp_P, deg_max);
-  print_P(tmp_Q, deg_max);
-
   /* Calcul */
-  for(i=0;i<=deg_max;i++){
-    for(j=0;j<=i;j++){
-      mpz_mul(tmp, tmp_P[i], tmp_Q[i-j]);
-      mpz_add(copy_tmp[i], copy_tmp[i], tmp);
+  for(i=0;i<=deg_P;i++){
+    for(j=0;j<=deg_Q;j++){
+      mpz_mul(tmp, P[i], Q[j]);
+      mpz_add(copy_tmp[i+j], copy_tmp[i+j], tmp);
     }
   }
-  
-  /*printf("Calcul fait\n");*/
-  print_P(copy_tmp, R-1);
-
-  /* DEL ZEROS*/
-  int nb_z=nb_zeros(copy_tmp, R-1);
-  mpz_t tmp_t[R-1-nb_z];
-  for(i=0;i<R-1-nb_z;i++)
-    mpz_init(tmp_t[i]);
-  del_zeros(tmp_t, copy_tmp, R-1, nb_z);
-  print_P(tmp_t, R-1-nb_z);
-  
-  /* Copy de copy_t dans res*/
-
+	/* Affichage */
+  print_P(copy_tmp, deg_Res);
+  /* Copy de copy_tmp dans res*/
+	for(i=0;i<=deg_Res;i++)
+		mpz_set(res[i], copy_tmp[i]);
   printf("*************FIN MUL*************\n");
-  
-  
   /* Clear */
   mpz_clear(tmp);
   for(i=0;i<=deg_max;i++){
     mpz_clear(tmp_P[i]);
     mpz_clear(tmp_Q[i]);
   }
-  for(i=0;i<R;i++)
+  for(i=0;i<=deg_Res;i++)
     mpz_clear(copy_tmp[i]);
 }
 
@@ -345,34 +313,71 @@ void lagrange(mpz_t *res, mpz_t *points, mpz_t *images, int degre, mpz_t mod){
     mpz_clear(tmp_Li[i]);
 }
 
+
 /**
- * Multiply 2 polynomials of different sizes
+ * Multiply 2 polynomials of different sizes OLD
  * @param res Matrix to complete, initialized at 0
  */
-void mpz_mul_poly(mpz_t *res, mpz_t *P, mpz_t *Q, int deg_P, int deg_Q){
+void mpz_mul_poly_old(mpz_t *res, mpz_t *P, mpz_t *Q, int deg_P, int deg_Q){
   int i, j;
-  int N = deg_P+deg_Q+1;
+  int deg_max;
+  max(&deg_max, deg_P, deg_Q, NULL);
+  int N = deg_max+1;
+  int R = 2*N;
   mpz_t tmp;
   mpz_init(tmp);
-  mpz_t copy_tmp[N];
+  mpz_t tmp_P[deg_max+1], tmp_Q[deg_max+1];
+  mpz_t copy_tmp[R];
 
   printf("\n*************Multiplication*************\n");
-	/* Init */
-  for(i=0;i<N;i++)
+
+  for(i=0;i<R;i++)
     mpz_init(copy_tmp[i]);
-  /* Calcul */
-  for(i=0;i<=deg_P;i++){
-    for(j=0;j<=deg_Q;j++){
-      mpz_mul(tmp, P[i], Q[j]);
-      mpz_add(copy_tmp[i+j], copy_tmp[i+j], tmp);
+
+  /* Remplissage des polynomes temporaires */
+  for(i=0; i<=deg_max; i++){
+    if(i>deg_P){
+      mpz_init(tmp_P[deg_max-i]);
+      mpz_init_set(tmp_Q[deg_max-i], Q[deg_max-i]);
+    }
+    if(i>deg_Q){
+      mpz_init(tmp_Q[deg_max-i]);
+      mpz_init_set(tmp_P[deg_max-i], P[deg_max-i]);
+    }
+    else{
+      mpz_init_set(tmp_P[deg_max-i], P[deg_P-i]);
+      mpz_init_set(tmp_Q[deg_max-i], Q[deg_Q-i]);
     }
   }
-	/* Affichage */
-  print_P(copy_tmp, N);
+
+  printf("Polynome intermediaires prets\n");
+  print_P(tmp_P, deg_max);
+  print_P(tmp_Q, deg_max);
+
+  /* Calcul */
+  for(i=0;i<=deg_max;i++){
+    for(j=0;j<=i;j++){
+      mpz_mul(tmp, tmp_P[i], tmp_Q[i-j]);
+      mpz_add(copy_tmp[i], copy_tmp[i], tmp);
+    }
+  }
+  
+  /*printf("Calcul fait\n");*/
+  print_P(copy_tmp, R-1);
+
+  /* DEL ZEROS*/
+  int nb_z=nb_zeros(copy_tmp, R-1);
+  mpz_t tmp_t[R-1-nb_z];
+  for(i=0;i<R-1-nb_z;i++)
+    mpz_init(tmp_t[i]);
+  del_zeros(tmp_t, copy_tmp, R-1, nb_z);
+  print_P(tmp_t, R-1-nb_z);
+  
   /* Copy de copy_t dans res*/
-	for(i=0;i<N;i++)
-		mpz_set(res[i], copy_tmp[i]);
+
   printf("*************FIN MUL*************\n");
+  
+  
   /* Clear */
   mpz_clear(tmp);
   for(i=0;i<=deg_max;i++){
