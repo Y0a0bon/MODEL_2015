@@ -74,10 +74,10 @@ void inverse_modulaire(mpz_t inverse, mpz_t nb, mpz_t mod){
   }
   mpz_set(inverse, resultat[0]);
 	
-	/* Clear */
-	mpz_clear(resultat[0]);
-	mpz_clear(resultat[1]);
-	mpz_clear(resultat[2]);
+  /* Clear */
+  mpz_clear(resultat[0]);
+  mpz_clear(resultat[1]);
+  mpz_clear(resultat[2]);
 }
 
 
