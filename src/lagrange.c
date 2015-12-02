@@ -195,7 +195,7 @@ void mpz_mul_poly(mpz_t *res, mpz_t *P, mpz_t *Q, int deg_P, int deg_Q){
   int deg_Res = deg_P+deg_Q;
   mpz_t tmp;
   mpz_init(tmp);
-  mpz_t copy_tmp[N];
+  mpz_t copy_tmp[deg_Res+1];
 
   printf("\n*************Multiplication*************\n");
 	/* Init copy_tmp */
@@ -216,10 +216,6 @@ void mpz_mul_poly(mpz_t *res, mpz_t *P, mpz_t *Q, int deg_P, int deg_Q){
   printf("*************FIN MUL*************\n");
   /* Clear */
   mpz_clear(tmp);
-  for(i=0;i<=deg_max;i++){
-    mpz_clear(tmp_P[i]);
-    mpz_clear(tmp_Q[i]);
-  }
   for(i=0;i<=deg_Res;i++)
     mpz_clear(copy_tmp[i]);
 }
@@ -235,10 +231,12 @@ void mpz_mul_poly(mpz_t *res, mpz_t *P, mpz_t *Q, int deg_P, int deg_Q){
 void lagrange(mpz_t *res, mpz_t *points, mpz_t *images, int degre, mpz_t mod){
 	
   int i, j;
+	int deg_Li=0;
   mpz_t bin, bin_sub;
   mpz_t tmp_poly[2], tmp_Li[degre+1];
   mpz_init_set_si(bin, 1);
   mpz_init(bin_sub);
+	/* Init tmp_Li*/
   for(i=0;i<degre;i++)
     mpz_init(tmp_Li[i]);
   mpz_init_set_si(tmp_Li[degre], 1);
@@ -247,42 +245,38 @@ void lagrange(mpz_t *res, mpz_t *points, mpz_t *images, int degre, mpz_t mod){
   for(i=0; i<degre+1; i++){
     printf("\n****Calcul de L_%d****\n", i);
     printf("--- L_%d initial: ", i);
-    print_P(tmp_Li, degre);
+    print_P(tmp_Li, deg_Li);
     /* Quotient des produits (aj-ai) */
     for(j=0; j<degre+1; j++){
       if(j!=i){
-	mpz_sub(bin_sub, points[j], points[i]);
-	mpz_mul(bin, bin, bin_sub);
+				mpz_sub(bin_sub, points[j], points[i]);
+				mpz_mul(bin, bin, bin_sub);
       }
     }
-    
     /* Eleve a la puissance -1 */
     inverse_modulaire(bin, bin, mod);
-
     /* Multiplication par vi */
     mpz_mul(bin, bin, images[i]);
-		
     /** 
      * Multiplication par les polynomes X-aj 
      * et remise a 1 de bin
      */
     for(j=0; j<degre+1; j++){
-      
       /* Polynomes (X-aj) */
       if(j!=i){
-	/* aj <- (-aj) */
-	mpz_neg(bin_sub, points[j]);
-	
-	/* Construction du polynome (X-aj) */
-	mpz_init_set_si(tmp_poly[0], 1);
-	mpz_init_set(tmp_poly[1], bin_sub);
-	printf("--( X - a_%d)\n", j);
-	print_P(tmp_poly, 1);
-	
-	/* Multiplication de tmp_Li par le polynome */
-	mpz_mul_poly(tmp_Li, tmp_Li, tmp_poly, degre, 1);
-	printf("--- L_%d intermediaire: ", i);
-	print_P(tmp_Li, degre);
+				/* aj <- (-aj) */
+				mpz_neg(bin_sub, points[j]);
+				/* Construction du polynome (X-aj) */
+				mpz_init_set_si(tmp_poly[0], 1);
+				mpz_init_set(tmp_poly[1], bin_sub);
+				printf("--( X - a_%d)\n", j);
+				print_P(tmp_poly, 1);
+				
+				/* Multiplication de tmp_Li par le polynome */
+				mpz_mul_poly(tmp_Li, tmp_Li, tmp_poly, deg_Li, 1);
+				printf("--- L_%d intermediaire: ", i);
+				print_P(tmp_Li, deg_Li);
+				deg_Li++;
       }
     }
 

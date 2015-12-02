@@ -44,29 +44,6 @@ int main(int argc, char **argv){
   /* Print M */
   print_M(M, deg_P+deg_Q);
 
-
-  /* TEST MULTIPLICATION DE POLYNOMES */
-  mpz_t Pol[3], Pol2[2], Q_res[4];
-
-  for(i=0;i<4;i++)
-    mpz_init(Q_res[i]);
-  
-  mpz_init_set_si(Pol[0], 2);
-  mpz_init_set_si(Pol[1], 2);
-  mpz_init_set_si(Pol[2], 2);
-  /*mpz_init_set_si(Pol[3], 1);*/
-
-  mpz_init_set_si(Pol2[0], 3);
-  mpz_init_set_si(Pol2[1], 1);
-  
-  print_poly(Pol, 2);
-  print_poly(Pol2, 1);
-  
-  mpz_mul_poly(Q_res, Pol, Pol2, 2, 1);
-  printf("Resultat du produit:\n");
-  print_P(Q_res, 3);
-
-
   /* TEST DE LAGRANGE */
   mpz_t points[3], images[3], res[3];
   mpz_t modulo;
@@ -86,10 +63,10 @@ int main(int argc, char **argv){
   for(i=0;i<3;i++)
     mpz_init(res[i]);
   /* Apply Lagrange */
-  /*lagrange(res, points, images, deg_Res, modulo);*/
+  lagrange(res, points, images, deg_Res, modulo);
   /* Print res */
-  /*printf("Resultat = ");
-    print_poly(res, 2);*/
+  printf("Resultat = ");
+  print_poly(res, 2);
 
 
   printf("\nEnd.\n");
