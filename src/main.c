@@ -45,27 +45,30 @@ int main(int argc, char **argv){
   print_M(M, deg_P+deg_Q);
 
   /* TEST DE LAGRANGE */
-  mpz_t points[3], images[3], res[3];
+  mpz_t points[3], images[3], res[3], res_mod[4];
   mpz_t modulo;
   int deg_Res = 2;
 
   /* Init modulo */
   mpz_init_set_si(modulo, 11);
   /* Init points */
-  mpz_init_set_si(points[0],1);
+  mpz_init_set_si(points[0],0);
   mpz_init_set_si(points[1],-1);
-  mpz_init_set_si(points[2],0);
+  mpz_init_set_si(points[2],1);
   /* Init images */
   mpz_init_set_si(images[0],-1);
   mpz_init_set_si(images[1],1);
   mpz_init_set_si(images[2],-1);
   /* Init res */
-  for(i=0;i<3;i++)
+  for(i=0;i<3;i++){
     mpz_init(res[i]);
+		mpz_init(res_mod[i]);
+	}
+	mpz_init(res_mod[3]);
   /* Apply Lagrange */
-  lagrange(res, points, images, deg_Res, modulo);
+  lagrange(res, points, images, deg_Res, modulo, res_mod);
   /* Print res */
-  printf("Resultat = ");
+    printf("Resultat = ");
   print_poly(res, 2);
 
 
@@ -197,12 +200,12 @@ void trash(){
   mpz_init_set_si(Pol2[0], 4);
   mpz_init_set_si(Pol2[1], 3);
   
-  print_poly(Pol, 2);
-  print_poly(Pol2, 1);
+  print_P(Pol, 2);
+  print_P(Pol2, 1);
   
   mpz_mul_poly(Q_res, Pol, Pol2, 2, 1);
   printf("Resultat du produit:\n");
-  print_poly(Q_res, 3);
+  print_P(Q_res, 3);
 
 
   /* TEST DE LAGRANGE */
@@ -227,7 +230,7 @@ void trash(){
   /*lagrange(res, points, images, deg_p, modulo);*/
   /* Print res */
   printf("Resultat = ");
-  print_poly(res, 2);
+  print_P(res, 2);
 
 
    /* TEST HORNER */

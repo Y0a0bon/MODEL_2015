@@ -41,7 +41,7 @@ void del_zeros(mpz_t *new_P, mpz_t *P, int deg_P, int nb_zeros);
 
 void mpz_mul_poly(mpz_t *res, mpz_t *P, mpz_t *Q, int deg_P, int deg_Q);
 
-void lagrange(mpz_t *res, mpz_t *points, mpz_t *images, int degre, mpz_t mod);
+void lagrange(mpz_t *res, mpz_t *points, mpz_t *images, int degre, mpz_t mod, mpz_t *res_mod);
 
 
 /* horner.c */
