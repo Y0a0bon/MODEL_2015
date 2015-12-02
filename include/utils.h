@@ -4,11 +4,11 @@
 /* sylvester.c */
 int bound_Max(mpz_t *M, int column, int matrix_length, int r);
 
-void max(int *resultat, ...);
-
 void transpose(mpz_t *M, int matrix_length);
 
 void inverse_modulaire(mpz_t inverse, mpz_t nb, mpz_t mod);
+
+void sub_matrix(mpz_t *res, mpz_t input, int deg_m, int deg_n, int indice);
 
 void euclide_etendu(mpz_t nb1, mpz_t nb2, mpz_t *resultat);
 
@@ -29,7 +29,7 @@ void print_M(mpz_t *M, int size);
 /* lagrange.c */
 void print_P(mpz_t *polynome, int degre);
 
-void print_poly(mpz_t *polynome, int degre);
+void max(int *resultat, ...);
 
 void div_aux(mpz_t *res_int, mpz_t *P, mpz_t *Q, int deg_P, int deg_Q, mpz_t mod);
 

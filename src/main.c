@@ -12,12 +12,12 @@
 int main(int argc, char **argv){
   printf("Launching...\n");
   int i, deg_P, deg_Q, matrix_length;
-  mpz_t P[3], Q[3];
+  mpz_t P[3], Q[4];
   mpz_t mod;
   mpz_init_set_str(mod, "127", 10);
   
   deg_P=2;
-  deg_Q=2;
+  deg_Q=3;
   matrix_length = deg_P+deg_Q;
   /* Nombre total d elements dans la matrice */
   matrix_length *= matrix_length;
@@ -28,12 +28,12 @@ int main(int argc, char **argv){
   /* Init and fill P */
   mpz_init_set_str(P[0], "1", 10);
   mpz_init_set_str(P[1], "2", 10);
-  mpz_init_set_str(P[2], "-3", 10);
+  mpz_init_set_str(P[2], "3", 10);
   /* Init and fill Q */
-  mpz_init_set_str(Q[0], "3", 10);
-  mpz_init_set_str(Q[1], "4", 10);
-  mpz_init_set_str(Q[2], "5", 10);
-  /* mpz_init_set_str(Q[3], "7", 10); */
+  mpz_init_set_str(Q[0], "4", 10);
+  mpz_init_set_str(Q[1], "5", 10);
+  mpz_init_set_str(Q[2], "6", 10);
+  mpz_init_set_str(Q[3], "7", 10);
   /* Init M */
   for (i=0; i < matrix_length; i++){
     mpz_init(M[i]);
@@ -68,9 +68,10 @@ int main(int argc, char **argv){
   /* Apply Lagrange */
   lagrange(res, points, images, deg_Res, modulo, res_mod);
   /* Print res */
-    printf("Resultat = ");
-  print_poly(res, 2);
-
+  printf("\nResultat :\n");
+  print_P(res, 2);
+	printf("mod ");
+	print_P(res_mod, 3);
 
   printf("\nEnd.\n");
 

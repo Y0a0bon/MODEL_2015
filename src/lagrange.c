@@ -337,7 +337,10 @@ void lagrange(mpz_t *res, mpz_t *points, mpz_t *images, int degre, mpz_t mod, mp
 			print_P(tmp_mod[i], i+1);
 		}
 	}
-
+	
+	/* Copi de tmp_mod dans mod */
+	for(i=0; i<=degre+1; i++)
+		mpz_set(res_mod[i], tmp_mod[degre][i]);
   /* Clear */
   mpz_clear(bin);
   mpz_clear(bin_sub);

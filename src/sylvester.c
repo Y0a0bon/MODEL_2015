@@ -81,6 +81,8 @@ void inverse_modulaire(mpz_t inverse, mpz_t nb, mpz_t mod){
 }
 
 
+
+
 /**
  * Applique euclide etendu a nb1 et nb2
  * @param resultat tableau de 3 entiers : u, v et r tels que r=pgcd(nb1, nb2) et a*u+b*v=r
@@ -285,6 +287,20 @@ void sylvester(mpz_t *P, mpz_t *Q, int deg_P, int deg_Q, mpz_t *M){
   transpose(M, size);
 }
 
+/**
+ * Calcul la sou-matrice Ti de la matrice de Sylvester,
+ * compose des colonnes de 1 a n-indice et de n+1 a m+n+indice
+ */
+void sub_matrix(mpz_t *res, mpz_t input, int m, int n, int indice){
+	int i, k;
+	int size_col = (n-indice) + (m+n-indice+n+1+1);
+	/* On ne copie que les colonnes voulues dans la nouvelle matrice */
+	for(i=0;i<size_col;i++){
+		for(k=0;k<;k++)
+			mpz_set()
+	}
+	
+}
 
 /**
  * Print a matrix
