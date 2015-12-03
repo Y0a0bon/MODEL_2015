@@ -10,32 +10,24 @@
 
 #define MAX_SIZE 256
 
-/**
- * Print a mpz_t number
- * @param mpz Mpz number to print
- */
-void print_mpz(mpz_t mpz){
-  printf("%ld", mpz_get_si(mpz));
-}
-
 
 /**
  * Renvoie l'indice de la ligne du maximum de la colonne column
  * a partir de son element ligne r
  */
 int bound_Max(mpz_t *M, int column, int matrix_length, int r){
-	int i, indice=r;
-	mpz_t max;
-	mpz_init(max);
-	mpz_set(max, M[r*matrix_length+column]);
-	for(i=r+1; i<matrix_length; i++){
-		if(mpz_get_si(M[i*matrix_length+column])>mpz_get_si(max)){
-			mpz_set(max, M[i*matrix_length+column]);
-			indice=i;
-		}
-	}
-	mpz_clear(max);
-	return indice;
+  int i, indice=r;
+  mpz_t max;
+  mpz_init(max);
+  mpz_set(max, M[r*matrix_length+column]);
+  for(i=r+1; i<matrix_length; i++){
+    if(mpz_get_si(M[i*matrix_length+column])>mpz_get_si(max)){
+      mpz_set(max, M[i*matrix_length+column]);
+      indice=i;
+    }
+  }
+  mpz_clear(max);
+  return indice;
 }
 
 
@@ -192,7 +184,7 @@ void del_coeffs(int r, int matrix_length, mpz_t *M, mpz_t mod){
  * Apply Gauss algorithm
  * @param determinant le determinant de la matrice M
  */
-void gauss(mpz_t *determinant, mpz_t *M, int matrix_length, mpz_t mod){
+void gauss(mpz_t *determinant, mpz_t *matrice, int matrix_length, mpz_t mod){
     
   int i, j, k=-1;
   int r=0;
@@ -205,6 +197,12 @@ void gauss(mpz_t *determinant, mpz_t *M, int matrix_length, mpz_t mod){
   mpz_t coeff_det;
   mpz_init_set_si(coeff_det,1);
 
+
+  /* on copie matrice dans M */
+  mpz_t M[matrix_length*matrix_length];
+  for(i=0; i<matrix_length*matrix_length; i++){
+    mpz_init_set(M[i], matrice[i]);
+  }
 
   /* Reduit la matrice M modulo mod */
   for (i=0; i < matrix_length*matrix_length; i++){
@@ -244,8 +242,8 @@ void gauss(mpz_t *determinant, mpz_t *M, int matrix_length, mpz_t mod){
   mpz_mod(*determinant, *determinant, mod);
   inverse_modulaire(*determinant, *determinant, mod);
 	
-	mpz_clear(inverse);
-	mpz_clear(coeff_det);
+  mpz_clear(inverse);
+  mpz_clear(coeff_det);
 }
 
 
@@ -296,25 +294,52 @@ void sub_matrix(mpz_t *res, mpz_t input, int m, int n, int indice){
 	int size_col = (n-indice) + (m+n-indice+n+1+1);
 	/* On ne copie que les colonnes voulues dans la nouvelle matrice */
 	for(i=0;i<size_col;i++){
-		for(k=0;k<;k++)
-			mpz_set()
+	  /*for(k=0;k<;k++)
+		  mpz_set()*/
 	}
 	
 }
 
-/**
- * Print a matrix
- * @param M Square matrix to print
- * @param size Square matrix M's length
- */
-void print_M(mpz_t *M, int size){
-  int i;
-  char buf[256];
-  for(i=0; i<size*size; i++){
-    if(!(i%size) && i!=0)
-      printf("\n");
-    mpz_get_str(buf, 10, M[i]);
-    printf("%s\t", buf);
+
+
+void resultant(mpz_t *resultant, mpz_t **P, mpz_t **Q, int deg_P, int deg_Q, int *degres_PY, int *degres_QY, mpz_t mod){
+  printf("resultant\n");
+  int i, borne;
+  int matrix_length=deg_P+deg_Q;
+  int matrix_size= matrix_length*matrix_length;
+  
+  mpz_t M[matrix_size];
+  for(i=0; i<matrix_size; i++){
+    mpz_init(M[i]);
   }
-  printf("\n\n");
+  printf("fin init P\n");
+  /* Calcul de la matrice de Sylvester */
+  sylvester(P, Q, deg_P, deg_Q, M);
+  printf("matrice de sylvester:\n");
+  print_M(M, deg_P+deg_Q);
+  
+  /* Calcul de la borne superieure sur le degre du resultant */
+  borne=2*deg_P*deg_Q;
+  if(mpz_cmp_si(mod, borne)<=0){
+    printf("Modulo trop petit !\n");
+    exit(0);
+  }
+  printf("borne = %d\n", borne);
+  
+  /* Choix des valeurs */
+  mpz_t values[borne];
+  for(i=0; i<borne; i++){
+    mpz_init_set_si(values[i], i);
+    printf("values[%d] = %ld", i, mpz_get_si(values[i]));
+  }
+  printf("appel Gauss\n");
+  /* Appel de Gauss */
+  mpz_t determinant[borne];
+  for(i=0;i<borne;i++){
+    mpz_init(determinant[i]);
+    gauss(&determinant[i], M, matrix_length, mod);
+  }
+  
+  print_P(determinant, borne-1);
+  
 }

@@ -2,6 +2,7 @@
 #define _UTILS_H_
 
 /* sylvester.c */
+
 int bound_Max(mpz_t *M, int column, int matrix_length, int r);
 
 void transpose(mpz_t *M, int matrix_length);
@@ -20,16 +21,11 @@ void gauss(mpz_t *determinant, mpz_t *M, int matrix_length, mpz_t mod);
 
 void sylvester(mpz_t *P, mpz_t *Q, int degre_P, int degre_Q, mpz_t *M);
 
-void print_M(mpz_t *M, int size);
-
-
+void resultant(mpz_t *resultant, mpz_t *P, mpz_t *Q, int deg_P, int deg_Q, mpz_t mod);
 
 
 
 /* lagrange.c */
-void print_P(mpz_t *polynome, int degre);
-
-void max(int *resultat, ...);
 
 void div_aux(mpz_t *res_int, mpz_t *P, mpz_t *Q, int deg_P, int deg_Q, mpz_t mod);
 
@@ -51,6 +47,18 @@ void horner(mpz_t res, mpz_t *P, int deg_P, mpz_t valeur, mpz_t mod);
 void print_racines(mpz_t *P, int deg_P, mpz_t mod);
 
 void racines(mpz_t *rac, mpz_t *P, int deg_P, int *nb_racines, mpz_t mod);
+
+/* tools.c */
+
+void print_P(mpz_t *polynome, int degre);
+
+void init_mpzs(mpz_t *nb, int inf, int sup);
+
+void max(int *resultat, ...);
+
+void print_mpz(mpz_t mpz);
+
+void print_M(mpz_t *M, int size);
 
 #endif
 

@@ -44,35 +44,39 @@ int main(int argc, char **argv){
   /* Print M */
   print_M(M, deg_P+deg_Q);
 
-  /* TEST DE LAGRANGE */
-  mpz_t points[3], images[3], res[3], res_mod[4];
-  mpz_t modulo;
-  int deg_Res = 2;
+  
+  /* Initialisation des polynomes */
+  int deg_PY=3;
+  int deg_QY=2;
+  int degres_PY[]={1, 0, 2, 0};
+  int degres_QY[]={0, 2, 0};
+  mpz_t *PY[deg_PY];
+  mpz_t *QY[deg_QY];
+  /* Allocation */
+  for (i=0; i<deg_PY+1; i++)
+    PY[i]=malloc((degres_PY[i]+1)*sizeof(mpz_t));
+  for (i=0; i<deg_QY+1; i++)
+    QY[i]=malloc((degres_QY[i]+1)*sizeof(mpz_t));  
+  /* Remplissage */
+  mpz_init_set_str(PY[0][0], "1", 10);
+  mpz_init_set_str(PY[0][1], "1", 10);
+  mpz_init_set_str(PY[1][0], "2", 10);
+  mpz_init_set_str(PY[2][0], "1", 10);
+  mpz_init_set_str(PY[2][1], "0", 10);
+  mpz_init_set_str(PY[2][2], "-1", 10);
+  mpz_init_set_str(PY[3][0], "5", 10);
 
-  /* Init modulo */
-  mpz_init_set_si(modulo, 11);
-  /* Init points */
-  mpz_init_set_si(points[0],0);
-  mpz_init_set_si(points[1],-1);
-  mpz_init_set_si(points[2],1);
-  /* Init images */
-  mpz_init_set_si(images[0],-1);
-  mpz_init_set_si(images[1],1);
-  mpz_init_set_si(images[2],-1);
-  /* Init res */
-  for(i=0;i<3;i++){
-    mpz_init(res[i]);
-		mpz_init(res_mod[i]);
-	}
-	mpz_init(res_mod[3]);
-  /* Apply Lagrange */
-  lagrange(res, points, images, deg_Res, modulo, res_mod);
-  /* Print res */
-  printf("\nResultat :\n");
-  print_P(res, 2);
-	printf("mod ");
-	print_P(res_mod, 3);
-
+  mpz_init_set_str(QY[0][0], "1", 10);
+  mpz_init_set_str(QY[1][0], "1", 10);
+  mpz_init_set_str(QY[1][1], "2", 10);
+  mpz_init_set_str(QY[1][2], "-1", 10);
+  mpz_init_set_str(QY[2][0], "7", 10);
+  
+  /* TEST QUESTION 1 */
+  mpz_t res;
+  mpz_init(res);
+  resultant(&res, P, Q, deg_P, deg_Q, mod);
+	
   printf("\nEnd.\n");
 
   return EXIT_SUCCESS;
@@ -210,12 +214,12 @@ void trash(){
 
 
   /* TEST DE LAGRANGE */
-  mpz_t points[3], images[3], res[3];
+  mpz_t points[3], images[3], res[3], res_mod[4];
   mpz_t modulo;
-  /*int deg_p=2;---------------------*/
+  int deg_Res = 2;
 
   /* Init modulo */
-  mpz_init_set_si(modulo, 10);
+  mpz_init_set_si(modulo, 11);
   /* Init points */
   mpz_init_set_si(points[0],0);
   mpz_init_set_si(points[1],-1);
@@ -225,13 +229,18 @@ void trash(){
   mpz_init_set_si(images[1],1);
   mpz_init_set_si(images[2],-1);
   /* Init res */
-  for(i=0;i<3;i++)
+  for(i=0;i<3;i++){
     mpz_init(res[i]);
+    mpz_init(res_mod[i]);
+  }
+  mpz_init(res_mod[3]);
   /* Apply Lagrange */
-  /*lagrange(res, points, images, deg_p, modulo);*/
+  lagrange(res, points, images, deg_Res, modulo, res_mod);
   /* Print res */
-  printf("Resultat = ");
+  printf("\nResultat :\n");
   print_P(res, 2);
+  printf("mod ");
+  print_P(res_mod, 3);
 
 
    /* TEST HORNER */

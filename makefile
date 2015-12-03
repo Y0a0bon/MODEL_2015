@@ -7,10 +7,10 @@ OBJ=$(obj/)
 
 all: $(EXEC)
 
-bin/main : obj/main.o obj/sylvester.o obj/lagrange.o obj/horner.o
-	$(CC) obj/main.o obj/sylvester.o obj/lagrange.o obj/horner.o -o bin/main $(LDFLAGS)
+bin/main : obj/main.o obj/sylvester.o obj/lagrange.o obj/horner.o obj/tools.o
+	$(CC) obj/main.o obj/sylvester.o obj/lagrange.o obj/horner.o obj/tools.o -o bin/main $(LDFLAGS)
 
-obj/main.o : src/main.c src/sylvester.c src/horner.c
+obj/main.o : src/main.c src/sylvester.c src/horner.c src/tools.c
 	$(CC) -c src/main.c -o obj/main.o $(CFLAGS)
 
 obj/sylvester.o : src/sylvester.c
@@ -20,7 +20,10 @@ obj/lagrange.o : src/lagrange.c
 	$(CC) -c src/lagrange.c -o obj/lagrange.o $(CFLAGS)
 
 obj/horner.o : src/horner.c
-	$(CC) -c src/horner.c -o obj/horner.o $(FLAGS)
+	$(CC) -c src/horner.c -o obj/horner.o $(CFLAGS)
+
+obj/tools.o : src/tools.c
+	$(CC) -c src/tools.c -o obj/tools.o $(CFLAGS)
 
 clean :
 	rm -f obj/*.o bin/main

@@ -10,67 +10,7 @@
 #include <stdlib.h>
 #include <gmp.h>
 #include <string.h>
-#include <stdarg.h>
 #include "../include/utils.h"
-
-
-/**
- * Print polynomial P
- * @param P Polynomial to print
- * @param degree Polynomial's degree
- */
-void print_P(mpz_t *polynome, int degre){
-  int i;
-  for (i=0; i<degre; i++)
-    printf("%ld*X^%d + ", mpz_get_si(polynome[i]), degre-i);
-  printf("%ld\n", mpz_get_si(polynome[i]));
-}
-
-
-/**
- * Init a mpz_t vector to 0
- */
-void init_mpzs(mpz_t *nb, int inf, int sup){
-  int i;
-  for(i=inf;i<sup;i++)
-    mpz_init(nb[i]);
-}
-
-
-/**
- * Print polynomial P
- * @param P Polynomial to print
- * @param degree Polynomial's degree
- */
-void print_poly(mpz_t *P, int degree){
-  int i;
-  printf("Polynome = ");
-  for (i=degree;i>0; i--)
-    printf("%ldX^%d + ", mpz_get_si(P[i]), i);
-  printf("%ld\n", mpz_get_si(P[i]));
-}
-
-
-
-/**
- * Return max of nb_param integers
- * @param resultat Contains the result
- */
-void max(int *resultat, ...){
-  int param = 1;
-  *resultat = 1;
-  va_list ap;
-
-  va_start(ap, resultat);
-
-  do{
-    if(*resultat < param)
-      *resultat=param;
-    param=va_arg(ap, int);
-  }while(param!=NULL);
-
-  va_end(ap);
-}
 
 
 /**
@@ -125,7 +65,7 @@ void div_aux(mpz_t *res_int, mpz_t *P, mpz_t *Q, int deg_P, int deg_Q, mpz_t mod
     mpz_mul(S[i], S[i], P[0]);
     mpz_mod(S[i], S[i], mod);
   }
-  print_poly(S, deg_P);
+  print_P(S, deg_P);
 
   printf("fin remplissage S\n");
   
