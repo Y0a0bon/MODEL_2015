@@ -15,8 +15,13 @@
  */
 void horner(mpz_t res, mpz_t *P, int deg_P, mpz_t valeur, mpz_t mod){
   int i;
-  
+
+  if (deg_P == 0){
+    mpz_set(res,P[0]);
+    return;
+  }
   mpz_mul(res, P[0], valeur);
+  
   for (i=1; i<deg_P; i++){
     mpz_add(res, res, P[i]);
     mpz_mul(res, res, valeur);

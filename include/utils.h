@@ -9,7 +9,7 @@ void transpose(mpz_t *M, int matrix_length);
 
 void inverse_modulaire(mpz_t inverse, mpz_t nb, mpz_t mod);
 
-void sub_matrix(mpz_t *res, mpz_t *input, int m, int n, int indice);
+void sub_matrix(mpz_t *res, mpz_t input, int deg_m, int deg_n, int indice);
 
 void euclide_etendu(mpz_t nb1, mpz_t nb2, mpz_t *resultat);
 
@@ -21,7 +21,12 @@ void gauss(mpz_t *determinant, mpz_t *M, int matrix_length, mpz_t mod);
 
 void sylvester(mpz_t *P, mpz_t *Q, int degre_P, int degre_Q, mpz_t *M);
 
-void resultant(mpz_t *resultant, mpz_t **P, mpz_t **Q, int deg_P, int deg_Q, int *degres_PY, int *degres_QY, mpz_t mod);
+void sub_matrix(mpz_t *res, mpz_t input, int m, int n, int indice);
+
+void eval_biv(mpz_t value, mpz_t **PY, mpz_t **QY, int *degres_PY, int *degres_QY, mpz_t *P, mpz_t *Q, int deg_P, int deg_Q, mpz_t mod );
+
+void resultant(mpz_t *resultant, mpz_t **PY, mpz_t **QY, int deg_P, int deg_Q, int *degres_PY, int *degres_QY, mpz_t mod);
+
 
 
 /* lagrange.c */
@@ -46,7 +51,6 @@ void horner(mpz_t res, mpz_t *P, int deg_P, mpz_t valeur, mpz_t mod);
 void print_racines(mpz_t *P, int deg_P, mpz_t mod);
 
 void racines(mpz_t *rac, mpz_t *P, int deg_P, int *nb_racines, mpz_t mod);
-
 
 /* tools.c */
 

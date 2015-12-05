@@ -20,9 +20,9 @@ int main(int argc, char **argv){
   deg_Q=3;
   matrix_length = deg_P+deg_Q;
   /* Nombre total d elements dans la matrice */
-  int matrix_length_full = matrix_length*matrix_length;
+  matrix_length *= matrix_length;
   
-  mpz_t M[matrix_length_full];
+  mpz_t M[matrix_length];
 
   /* TEST SYLVESTER */
   /* Init and fill P */
@@ -35,7 +35,7 @@ int main(int argc, char **argv){
   mpz_init_set_str(Q[2], "6", 10);
   mpz_init_set_str(Q[3], "7", 10);
   /* Init M */
-  for (i=0; i < matrix_length_full; i++){
+  for (i=0; i < matrix_length; i++){
     mpz_init(M[i]);
   }
   /* Fill M */
@@ -44,21 +44,14 @@ int main(int argc, char **argv){
   /* Print M */
   print_M(M, deg_P+deg_Q);
 
-	
-	/* Sous_matrice Ri */
-	int indice=1;
-	int sub_size=(deg_Q-indice)+(deg_P-indice+2);
-	mpz_t sub_M[sub_size];
-	sub_matrix(sub_M, M, deg_P, deg_Q, indice);
-	print_M(sub_M, sub_size);
   
   /* Initialisation des polynomes */
   int deg_PY=3;
   int deg_QY=2;
   int degres_PY[]={1, 0, 2, 0};
   int degres_QY[]={0, 2, 0};
-  mpz_t *PY[deg_PY];
-  mpz_t *QY[deg_QY];
+  mpz_t *PY[deg_PY+1];
+  mpz_t *QY[deg_QY+1];
   /* Allocation */
   for (i=0; i<deg_PY+1; i++)
     PY[i]=malloc((degres_PY[i]+1)*sizeof(mpz_t));
@@ -80,10 +73,20 @@ int main(int argc, char **argv){
   mpz_init_set_str(QY[2][0], "7", 10);
   
   /* TEST QUESTION 1 */
+  mpz_t value;
+  mpz_init(value);
+  mpz_set_si(value, 4);
+
+  mpz_t Pi[deg_PY], Qi[deg_QY];
+  init_mpzs(Pi, 0, deg_PY+1);
+  init_mpzs(Qi, 0, deg_QY+1);
+  
   mpz_t res;
   mpz_init(res);
-  /*resultant(&res, P, Q, deg_P, deg_Q, mod);*/
-	
+  resultant(&res, PY, QY, deg_PY, deg_QY, degres_PY, degres_QY, mod);
+  /*eval_biv(value, PY, QY, degres_PY, degres_QY, Pi, Qi, deg_PY, deg_QY, mod );
+  print_P(Pi, deg_PY);
+  print_P(Qi, deg_QY);*/
   printf("\nEnd.\n");
 
   return EXIT_SUCCESS;

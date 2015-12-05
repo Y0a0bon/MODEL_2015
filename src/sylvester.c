@@ -289,75 +289,101 @@ void sylvester(mpz_t *P, mpz_t *Q, int deg_P, int deg_Q, mpz_t *M){
  * Calcul la sou-matrice Ti de la matrice de Sylvester,
  * compose des colonnes de 1 a n-indice et de n+1 a m+n+indice
  */
-void sub_matrix(mpz_t *res, mpz_t *input, int m, int n, int indice){
-	int i, k;
-	int size_m = m+n;
-	int size_col = (n-indice) + (m+n-indice+n+1+1);
+void sub_matrix(mpz_t *res, mpz_t input, int m, int n, int indice){
+  int i;
+  int size_col = (n-indice) + (m+n-indice+n+1+1);
 	/* On ne copie que les colonnes voulues dans la nouvelle matrice */
-	/* Init */
-	for(i=0;i<size_col;i++)
-		mpz_init(res[i]);
-
-	/* Col 1 a n-i */
-	for(i=0;i<n-indice;i++){
-		for(k=0;k<size_m;k++)
-			mpz_set(res[i*size_m+k], input[i*size_m+k]);
+	for(i=0;i<size_col;i++){
+	  /*for(k=0;k<;k++)
+		  mpz_set()*/
 	}
-	printf("Fin premier remplissage\n");
-	/* Col n a m+n-i */
-	for(i=n;i<m+n-indice;i++){
-		for(k=0;k<size_m;k++)
-			mpz_set(res[((i-indice)*size_m)+k], input[i*size_m+k]);
-	}
+	
 }
 
 
+/* evalue PY et QY en value et remplit les polynomes en Y P et Q */
+void eval_biv(mpz_t value, mpz_t **PY, mpz_t **QY, int *degres_PY, int *degres_QY, mpz_t *P, mpz_t *Q, int deg_P, int deg_Q, mpz_t mod ){
+  int i;
+  printf("dans eval\n");
+  for (i=0; i<deg_P+1; i++){
+    horner(P[i], PY[i], degres_PY[i], value, mod);
+    printf("etape 1 \n");
+  }
 
-/*
-Parcourir les colonnes 1 a n-i et n+1 a m+n-i
-// recopier chaque ligne de ces colonnes
+  for(i=0; i<deg_Q+1; i++ ){
+    printf("%d\n", i);
+    horner(Q[i], QY[i], degres_QY[i], value, mod);
+    printf("etape 2\n");
+  }
+  printf("fin eval\n");
+}
 
-*/
-
-
-
-void resultant(mpz_t *resultant, mpz_t **P, mpz_t **Q, int deg_P, int deg_Q, int *degres_PY, int *degres_QY, mpz_t mod){
+void resultant(mpz_t *resultant, mpz_t **PY, mpz_t **QY, int deg_P, int deg_Q, int *degres_PY, int *degres_QY, mpz_t mod){
   printf("resultant\n");
   int i, borne;
   int matrix_length=deg_P+deg_Q;
   int matrix_size= matrix_length*matrix_length;
-  
+
   mpz_t M[matrix_size];
   for(i=0; i<matrix_size; i++){
     mpz_init(M[i]);
-  }
-  printf("fin init P\n");
-  /* Calcul de la matrice de Sylvester */
-  sylvester(&P, &Q, deg_P, deg_Q, M);
-  printf("matrice de sylvester:\n");
-  print_M(M, deg_P+deg_Q);
   
-  /* Calcul de la borne superieure sur le degre du resultant */
-  borne=2*deg_P*deg_Q;
-  if(mpz_cmp_si(mod, borne)<=0){
-    printf("Modulo trop petit !\n");
-    exit(0);
-  }
-  printf("borne = %d\n", borne);
+    borne=2*deg_P*deg_Q;
+    printf("fin init P\n");
   
-  /* Choix des valeurs */
-  mpz_t values[borne];
-  for(i=0; i<borne; i++){
-    mpz_init_set_si(values[i], i);
-    printf("values[%d] = %ld", i, mpz_get_si(values[i]));
+    /* Calcul de la borne superieure sur le degre du resultant */
+
+    if(mpz_cmp_si(mod, borne)<=0){
+      printf("Modulo trop petit !\n");
+      exit(0);
+    }
+    printf("borne = %d\n", borne);
+
+    /* Choix des valeurs */
+    mpz_t values[borne];
+    for(i=0; i<borne; i++){
+      mpz_init_set_si(values[i], i);
+      printf("values[%d] = %ld", i, mpz_get_si(values[i]));
+    }
+    printf("\nfin init values\n");
+    mpz_t P[deg_P+1], Q[deg_Q+1];
+    for(i=0; i<deg_P+1; i++){
+      mpz_init(P[i]);
+    }
+    for(i=0; i<deg_Q+1; i++){
+      mpz_init(Q[i]);
+    }
+    mpz_t determinant[borne];
+    for(i=0;i<borne;i++){
+      mpz_init(determinant[i]);
+    }
+    printf("appel a eval\n");
+    for(i=0; i<borne; i++){
+      eval_biv(values[i], PY, QY, degres_PY, degres_QY, P, Q, deg_P, deg_Q, mod );
+      printf("ici\n");
+      print_P(P, deg_P);
+      print_P(Q, deg_Q);
+      printf("appel sylvester\n");
+      
+      /* Calcul de la matrice de Sylvester */
+      sylvester(P, Q, deg_P, deg_Q, M);
+      printf("matrice de sylvester:\n");
+      print_M(M, deg_P+deg_Q);
+
+      printf("appel Gauss\n");
+      
+      /* Appel de Gauss */
+
+      gauss(&determinant[i], M, matrix_length, mod);
+    }
+
+    print_P(determinant, borne-1);
+
+    /* appel a Lagrange */
+
   }
-  printf("appel Gauss\n");
-  /* Appel de Gauss */
-  mpz_t determinant[borne];
-  for(i=0;i<borne;i++){
-    mpz_init(determinant[i]);
-    gauss(&determinant[i], M, matrix_length, mod);
-  }
-  
-  print_P(determinant, borne-1);
+
+
+
+
 }
