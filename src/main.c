@@ -20,9 +20,9 @@ int main(int argc, char **argv){
   deg_Q=3;
   matrix_length = deg_P+deg_Q;
   /* Nombre total d elements dans la matrice */
-  matrix_length *= matrix_length;
+  int matrix_length_full = matrix_length*matrix_length;
   
-  mpz_t M[matrix_length];
+  mpz_t M[matrix_length_full];
 
   /* TEST SYLVESTER */
   /* Init and fill P */
@@ -35,7 +35,7 @@ int main(int argc, char **argv){
   mpz_init_set_str(Q[2], "6", 10);
   mpz_init_set_str(Q[3], "7", 10);
   /* Init M */
-  for (i=0; i < matrix_length; i++){
+  for (i=0; i < matrix_length_full; i++){
     mpz_init(M[i]);
   }
   /* Fill M */
@@ -44,6 +44,13 @@ int main(int argc, char **argv){
   /* Print M */
   print_M(M, deg_P+deg_Q);
 
+	
+	/* Sous_matrice Ri */
+	int indice=1;
+	int sub_size=(deg_Q-indice)+(deg_P-indice+2);
+	mpz_t sub_M[sub_size];
+	sub_matrix(sub_M, M, deg_P, deg_Q, indice);
+	print_M(sub_M, sub_size);
   
   /* Initialisation des polynomes */
   int deg_PY=3;
@@ -75,7 +82,7 @@ int main(int argc, char **argv){
   /* TEST QUESTION 1 */
   mpz_t res;
   mpz_init(res);
-  resultant(&res, P, Q, deg_P, deg_Q, mod);
+  /*resultant(&res, P, Q, deg_P, deg_Q, mod);*/
 	
   printf("\nEnd.\n");
 

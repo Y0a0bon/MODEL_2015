@@ -289,16 +289,35 @@ void sylvester(mpz_t *P, mpz_t *Q, int deg_P, int deg_Q, mpz_t *M){
  * Calcul la sou-matrice Ti de la matrice de Sylvester,
  * compose des colonnes de 1 a n-indice et de n+1 a m+n+indice
  */
-void sub_matrix(mpz_t *res, mpz_t input, int m, int n, int indice){
+void sub_matrix(mpz_t *res, mpz_t *input, int m, int n, int indice){
 	int i, k;
+	int size_m = m+n;
 	int size_col = (n-indice) + (m+n-indice+n+1+1);
 	/* On ne copie que les colonnes voulues dans la nouvelle matrice */
-	for(i=0;i<size_col;i++){
-	  /*for(k=0;k<;k++)
-		  mpz_set()*/
+	/* Init */
+	for(i=0;i<size_col;i++)
+		mpz_init(res[i]);
+
+	/* Col 1 a n-i */
+	for(i=0;i<n-indice;i++){
+		for(k=0;k<size_m;k++)
+			mpz_set(res[i*size_m+k], input[i*size_m+k]);
 	}
-	
+	printf("Fin premier remplissage\n");
+	/* Col n a m+n-i */
+	for(i=n;i<m+n-indice;i++){
+		for(k=0;k<size_m;k++)
+			mpz_set(res[((i-indice)*size_m)+k], input[i*size_m+k]);
+	}
 }
+
+
+
+/*
+Parcourir les colonnes 1 a n-i et n+1 a m+n-i
+// recopier chaque ligne de ces colonnes
+
+*/
 
 
 
@@ -314,7 +333,7 @@ void resultant(mpz_t *resultant, mpz_t **P, mpz_t **Q, int deg_P, int deg_Q, int
   }
   printf("fin init P\n");
   /* Calcul de la matrice de Sylvester */
-  sylvester(P, Q, deg_P, deg_Q, M);
+  sylvester(&P, &Q, deg_P, deg_Q, M);
   printf("matrice de sylvester:\n");
   print_M(M, deg_P+deg_Q);
   
@@ -341,5 +360,4 @@ void resultant(mpz_t *resultant, mpz_t **P, mpz_t **Q, int deg_P, int deg_Q, int
   }
   
   print_P(determinant, borne-1);
-  
 }
