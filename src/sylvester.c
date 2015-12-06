@@ -285,19 +285,35 @@ void sylvester(mpz_t *P, mpz_t *Q, int deg_P, int deg_Q, mpz_t *M){
   transpose(M, size);
 }
 
+
 /**
- * Calcul la sou-matrice Ti de la matrice de Sylvester,
+ * Calcul la sous-matrice Ti de la matrice de Sylvester,
  * compose des colonnes de 1 a n-indice et de n+1 a m+n+indice
  */
-void sub_matrix(mpz_t *res, mpz_t input, int m, int n, int indice){
-  int i;
-  int size_col = (n-indice) + (m+n-indice+n+1+1);
+void sub_matrix(mpz_t *res, mpz_t *input, int m, int n, int indice){
+  int col, lin;
+	int size=m+n;
 	/* On ne copie que les colonnes voulues dans la nouvelle matrice */
-	for(i=0;i<size_col;i++){
-	  /*for(k=0;k<;k++)
-		  mpz_set()*/
+	for(lin=0; lin<size; lin++){
+		/* Colonnes 1 a n-indice */
+		for(col=0; col<n-indice; col++)
+			mpz_set(res[lin*(size-2*indice)+col], input[lin*size+col]);
+		/* Colonnes n a m+n-indice */
+		for(col=n; col<m+n-indice; col++)
+			mpz_set(res[lin*(size-2*indice)+(col-indice)], input[lin*size+col]);
 	}
-	
+}
+
+/*
+*	Delete i_th lines of zeros
+*/
+void del_lines(mpz_t *res, mpz_t *input, int indice, int m_col, int m_lines){
+	int col, lin;
+	/* Init & fill */
+	for(lin=0; lin<m_lines-indice; lin++){
+		for(col=0; col<m_col; col++)
+			mpz_init_set(res[lin*(m_lines-indice)+col], input[lin*m_lines+col]);
+	}
 }
 
 

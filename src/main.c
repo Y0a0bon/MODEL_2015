@@ -11,16 +11,18 @@
 
 int main(int argc, char **argv){
   printf("Launching...\n");
-  int i, deg_P, deg_Q, matrix_length;
+  int i, j, deg_P, deg_Q;
   mpz_t P[3], Q[4];
   mpz_t mod;
   mpz_init_set_str(mod, "127", 10);
   
   deg_P=2;
   deg_Q=3;
-  matrix_length = deg_P+deg_Q;
+	int size=deg_P+deg_Q;
+  int m_lines = size;
+	int m_col = m_lines;
   /* Nombre total d elements dans la matrice */
-  matrix_length *= matrix_length;
+  int matrix_length = m_lines*m_lines;
   
   mpz_t M[matrix_length];
 
@@ -43,8 +45,27 @@ int main(int argc, char **argv){
   sylvester(P, Q, deg_P, deg_Q, M);
   /* Print M */
   print_M(M, deg_P+deg_Q);
-
-  
+	/* TEST SOUS-MATRICE */
+	int indice=1;
+	m_col=m_col-2*indice;
+	mpz_t sub_M[m_col*m_lines];
+	/* Init sub_M */
+	for(i=0; i < m_lines; i++){
+		for(j=0; j< m_col; j++)
+			mpz_init(sub_M[i*m_col+j]);
+	}
+	sub_matrix(sub_M, M, deg_P, deg_Q, indice);
+	print_M_2(sub_M, m_col, m_lines);
+	/* Matrice Ti */
+	mpz_t Ti[m_col*(m_lines-indice)];
+	/* Init Ti */
+  for(i=0; i<m_col*(m_lines-indice); i++)
+		mpz_init(Ti[i]);
+	/* Fill Ti */
+	del_lines(Ti, sub_M, indice, m_col, m_lines);
+	print_M_2(Ti, m_col, m_lines-indice);
+	
+	
   /* Initialisation des polynomes */
   int deg_PY=3;
   int deg_QY=2;
@@ -83,7 +104,7 @@ int main(int argc, char **argv){
   
   mpz_t res;
   mpz_init(res);
-  resultant(&res, PY, QY, deg_PY, deg_QY, degres_PY, degres_QY, mod);
+  /*resultant(&res, PY, QY, deg_PY, deg_QY, degres_PY, degres_QY, mod);*/
   /*eval_biv(value, PY, QY, degres_PY, degres_QY, Pi, Qi, deg_PY, deg_QY, mod );
   print_P(Pi, deg_PY);
   print_P(Qi, deg_QY);*/

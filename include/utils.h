@@ -9,8 +9,6 @@ void transpose(mpz_t *M, int matrix_length);
 
 void inverse_modulaire(mpz_t inverse, mpz_t nb, mpz_t mod);
 
-void sub_matrix(mpz_t *res, mpz_t input, int deg_m, int deg_n, int indice);
-
 void euclide_etendu(mpz_t nb1, mpz_t nb2, mpz_t *resultat);
 
 void switch_lines(int k, int r, int matrix_length, mpz_t *M);
@@ -21,7 +19,9 @@ void gauss(mpz_t *determinant, mpz_t *M, int matrix_length, mpz_t mod);
 
 void sylvester(mpz_t *P, mpz_t *Q, int degre_P, int degre_Q, mpz_t *M);
 
-void sub_matrix(mpz_t *res, mpz_t input, int m, int n, int indice);
+void sub_matrix(mpz_t *res, mpz_t *input, int m, int n, int indice);
+
+void del_lines(mpz_t *res, mpz_t *input, int indice, int m_col, int m_lines);
 
 void eval_biv(mpz_t value, mpz_t **PY, mpz_t **QY, int *degres_PY, int *degres_QY, mpz_t *P, mpz_t *Q, int deg_P, int deg_Q, mpz_t mod );
 
@@ -63,6 +63,8 @@ void max(int *resultat, ...);
 void print_mpz(mpz_t mpz);
 
 void print_M(mpz_t *M, int size);
+
+void print_M_2(mpz_t *M, int length, int width);
 
 #endif
 

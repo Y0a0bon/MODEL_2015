@@ -61,7 +61,7 @@ void print_mpz(mpz_t mpz){
 
 
 /**
- * Print a matrix
+ * Print a square matrix
  * @param M Square matrix to print
  * @param size Square matrix M's length
  */
@@ -74,6 +74,25 @@ void print_M(mpz_t *M, int size){
     mpz_get_str(buf, 10, M[i]);
     printf("%s\t", buf);
   }
+  printf("\n\n");
+}
+
+/**
+ * Print a matrix
+ * @param M Matrix to print
+ * @param length Matrix M's length
+ * @param width Matrix M's width
+ */
+void print_M_2(mpz_t *M, int columns, int lines){
+  int i, j;
+  char buf[256];
+  for(i=0; i<lines; i++){
+		printf("\n");
+		for(j=0;j<columns; j++){
+			mpz_get_str(buf, 10, M[i*columns+j]);
+			printf("%s\t", buf);
+		}
+	}
   printf("\n\n");
 }
 
