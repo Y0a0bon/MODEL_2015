@@ -220,13 +220,13 @@ void gauss(mpz_t *determinant, mpz_t *matrice, int matrix_length, mpz_t mod){
       r++;
       /* On normalise la ligne du pivot (supprimer pour determinant ?) */
       inverse_modulaire(inverse, M[k*matrix_length+j], mod);
-      printf("inverse : %ld\n", mpz_get_si(inverse));
+      /* printf("inverse : %ld\n", mpz_get_si(inverse)); */
 
       for (i=j; i<matrix_length; i++){
 	mpz_mul(M[k*matrix_length+i], M[k*matrix_length+i],inverse);
       }
       /* Actualisation du coefficient pour le determinant */
-      printf("coeff_det : %ld\n", mpz_get_si(coeff_det));
+      /* printf("coeff_det : %ld\n", mpz_get_si(coeff_det)); */
       mpz_mul(coeff_det, coeff_det, inverse );
     
       /* On place le pivot en haut des lignes a traiter */
@@ -237,7 +237,7 @@ void gauss(mpz_t *determinant, mpz_t *matrice, int matrix_length, mpz_t mod){
      
     }
   }
-  printf("coeff_det : %ld, signe : %ld\n", mpz_get_si(coeff_det), signe);
+  /* printf("coeff_det : %ld, signe : %ld\n", mpz_get_si(coeff_det), signe); */
   mpz_mul_si(*determinant, coeff_det, signe);
   mpz_mod(*determinant, *determinant, mod);
   inverse_modulaire(*determinant, *determinant, mod);
@@ -305,7 +305,7 @@ void sub_matrix(mpz_t *res, mpz_t *input, int m, int n, int indice){
 }
 
 /*
-*	Delete i_th lines of zeros
+* Delete i_th lines of zeros
 */
 void del_lines(mpz_t *res, mpz_t *input, int indice, int m_col, int m_lines){
 	int col, lin;
@@ -317,89 +317,115 @@ void del_lines(mpz_t *res, mpz_t *input, int indice, int m_col, int m_lines){
 }
 
 
-/* evalue PY et QY en value et remplit les polynomes en Y P et Q */
+/**
+ *  Evalue PY et QY en value et remplit les polynomes en Y P et Q
+ */
 void eval_biv(mpz_t value, mpz_t **PY, mpz_t **QY, int *degres_PY, int *degres_QY, mpz_t *P, mpz_t *Q, int deg_P, int deg_Q, mpz_t mod ){
   int i;
-  printf("dans eval\n");
+
   for (i=0; i<deg_P+1; i++){
     horner(P[i], PY[i], degres_PY[i], value, mod);
-    printf("etape 1 \n");
+ 
   }
 
   for(i=0; i<deg_Q+1; i++ ){
-    printf("%d\n", i);
+   
     horner(Q[i], QY[i], degres_QY[i], value, mod);
-    printf("etape 2\n");
+ 
   }
-  printf("fin eval\n");
+
 }
 
+
+/**
+ * Calcule le resultant des polynomes bivaries PY et QY
+ * Appeler nb_zeros et del_zeros en sortie pour avoir le resultant sans les premiers coeffs nuls
+ * @param resultant le resultant de PY et QY de taille 2*deg_P*deg_Q+1
+ * @param deg_P le degre du polynome PY en Y (nb de colonnes)
+ * @param deg_Q degre de QY en Y
+ * @param degres_PY liste des degres en X des coefficients de PY
+ * @param degres_QY liste des degres en X des corfficients de QY
+ */
 void resultant(mpz_t *resultant, mpz_t **PY, mpz_t **QY, int deg_P, int deg_Q, int *degres_PY, int *degres_QY, mpz_t mod){
   printf("resultant\n");
-  int i, borne;
+  int i,j, borne;
   int matrix_length=deg_P+deg_Q;
   int matrix_size= matrix_length*matrix_length;
-
+  
+  /* allocation de la matrice de sylvester */
   mpz_t M[matrix_size];
-  for(i=0; i<matrix_size; i++){
+  for(i=0; i<matrix_size; i++)
     mpz_init(M[i]);
-  
-    borne=2*deg_P*deg_Q;
-    printf("fin init P\n");
-  
-    /* Calcul de la borne superieure sur le degre du resultant */
 
-    if(mpz_cmp_si(mod, borne)<=0){
-      printf("Modulo trop petit !\n");
-      exit(0);
-    }
-    printf("borne = %d\n", borne);
+  /* Calcul de la borne superieure sur le degre du resultant */
+  borne=2*deg_P*deg_Q+1;
 
-    /* Choix des valeurs */
-    mpz_t values[borne];
-    for(i=0; i<borne; i++){
-      mpz_init_set_si(values[i], i);
-      printf("values[%d] = %ld", i, mpz_get_si(values[i]));
-    }
-    printf("\nfin init values\n");
-    mpz_t P[deg_P+1], Q[deg_Q+1];
-    for(i=0; i<deg_P+1; i++){
-      mpz_init(P[i]);
-    }
-    for(i=0; i<deg_Q+1; i++){
-      mpz_init(Q[i]);
-    }
-    mpz_t determinant[borne];
-    for(i=0;i<borne;i++){
-      mpz_init(determinant[i]);
-    }
-    printf("appel a eval\n");
-    for(i=0; i<borne; i++){
-      eval_biv(values[i], PY, QY, degres_PY, degres_QY, P, Q, deg_P, deg_Q, mod );
-      printf("ici\n");
-      print_P(P, deg_P);
-      print_P(Q, deg_Q);
-      printf("appel sylvester\n");
-      
-      /* Calcul de la matrice de Sylvester */
-      sylvester(P, Q, deg_P, deg_Q, M);
-      printf("matrice de sylvester:\n");
-      print_M(M, deg_P+deg_Q);
-
-      printf("appel Gauss\n");
-      
-      /* Appel de Gauss */
-
-      gauss(&determinant[i], M, matrix_length, mod);
-    }
-
-    print_P(determinant, borne-1);
-
-    /* appel a Lagrange */
-
+  /* si le modulo est trop petit, on ne peut pas choisir assez de valeurs pour l interpolation */
+  if(mpz_cmp_si(mod, borne)<=0){
+    printf("Modulo trop petit !\n");
+    exit(0);
   }
+  printf("borne = %d\n", borne);
 
+  /* Choix des valeurs d interpolation*/
+  mpz_t values[borne];
+  for(i=0; i<borne; i++){
+    mpz_init_set_si(values[i], i);
+    /*printf("values[%d] = %ld", i, mpz_get_si(values[i]));*/
+  }
+  /* initialisation de P, Q et du tableau des determinant */
+  /*printf("\nfin init values\n");*/
+  mpz_t P[deg_P+1], Q[deg_Q+1];
+  for(i=0; i<deg_P+1; i++){
+    mpz_init(P[i]);
+  }
+  for(i=0; i<deg_Q+1; i++){
+    mpz_init(Q[i]);
+  }
+  /* determinant contiendra les images des points de values pour l interpolation */
+  mpz_t determinant[borne];
+  for(i=0;i<borne;i++){
+    mpz_init(determinant[i]);
+  }
+  /* A chaque iteration, on traite une valeur de values et on calcule le determinant associe */
+  for(i=0; i<borne; i++){
+    /* evaluation du polynome en values[i] */
+    eval_biv(values[i], PY, QY, degres_PY, degres_QY, P, Q, deg_P, deg_Q, mod );
+    /*print_P(P, deg_P);
+    print_P(Q, deg_Q);
+    
+    printf("appel sylvester\n");
+      */
+    /* Calcul de la matrice de Sylvester dans M*/
+    sylvester(P, Q, deg_P, deg_Q, M);
+    /*printf("matrice de sylvester:\n");
+    print_M(M, deg_P+deg_Q);
 
+    printf("appel Gauss\n");
+      */
+    /* Appel de Gauss */
+    /* remplit le determinant associe a values[i] */
+    gauss(&determinant[i], M, matrix_length, mod);
 
+    /* on remet M a 0 pour la prochaine iteration */
+    for(j=0; j<matrix_size; j++)
+      mpz_set_si(M[j], 0);
+  }
+  /* affichage des determinants (avec la fonction d affichage de ploynomes) */
+  /*printf("determinants : ");
+  print_P(determinant, borne-1);*/
 
+  /* appel a Lagrange */
+  
+  mpz_t res_mod[borne+1];
+  for(j=0; j<borne+1; j++){
+    mpz_init(res_mod[j]);
+  }
+  lagrange(resultant, values, determinant, borne-1, mod, res_mod);
+  /*printf("fin lagrange\n");*/
+
+  for(j=0; j<borne; j++){
+    mpz_mod(resultant[j],resultant[j], mod);
+  }
+  
 }

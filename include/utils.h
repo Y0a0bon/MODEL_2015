@@ -52,6 +52,8 @@ void print_racines(mpz_t *P, int deg_P, mpz_t mod);
 
 void racines(mpz_t *rac, mpz_t *P, int deg_P, int *nb_racines, mpz_t mod);
 
+void search_roots(int *nb_racines, mpz_t *racines, mpz_t *P, mpz_t *Q, int deg_P, int deg_Q, mpz_t mod);
+
 /* tools.c */
 
 void print_P(mpz_t *polynome, int degre);
@@ -65,6 +67,31 @@ void print_mpz(mpz_t mpz);
 void print_M(mpz_t *M, int size);
 
 void print_M_2(mpz_t *M, int length, int width);
+
+int getData(char *path, char *out[2]);
+
+void split(char *str[2], char **outP, char **outQ);
+
+void get_Y(char **str, int *deg_Y);
+
+void get_X(char **str, int deg_Y, int *deg_X);
+
+void get_coeff(char **data, mpz_t **pol, int deg_Y, int *deg_X);
+
+void print_biv(mpz_t **PY, int *degres_PY, int deg_P, mpz_t mod);
+
+void eval_bivXY(mpz_t res, mpz_t value_X, mpz_t value_Y, mpz_t **PY, int *degres_PY, int deg_P, mpz_t mod);
+
+
+/* thm_chinois.c */
+
+void crt(mpz_t res, mpz_t a, mpz_t b, mpz_t mod_a, mpz_t mod_b);
+
+void find_roots(mpz_t *rac_mod1[2], mpz_t *rac_mod2[2], int nb1, int nb2,  mpz_t mod1, mpz_t mod2, mpz_t **PY, mpz_t **QY, int *degres_PY, int *degresQY, int deg_P, int deg_Q, mpz_t mod);
+
+/* solution.c */
+
+void solve(char *path, mpz_t mod1, mpz_t mod2);
 
 #endif
 

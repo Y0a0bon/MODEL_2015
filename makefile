@@ -2,28 +2,19 @@ CC=gcc
 CFLAGS=-Wall -ansi
 LDFLAGS=-lgmp
 EXEC=bin/main
-SRC=$(src/)
-OBJ=$(obj/)
+SRC=src/main.c src/sylvester.c src/lagrange.c src/horner.c src/tools.c src/thm_chinois.c src/solution.c
+OBJ=obj/main.o obj/sylvester.o obj/lagrange.o obj/horner.o obj/tools.o obj/thm_chinois.o obj/solution.o
 
 all: $(EXEC)
 
-bin/main : obj/main.o obj/sylvester.o obj/lagrange.o obj/horner.o obj/tools.o
-	$(CC) obj/main.o obj/sylvester.o obj/lagrange.o obj/horner.o obj/tools.o -o bin/main $(LDFLAGS)
+bin/main : $(OBJ)
+	$(CC) -o $@ $^ $(LDFLAGS)
 
-obj/main.o : src/main.c src/sylvester.c src/horner.c src/tools.c
+obj/main.o : $(SRC)
 	$(CC) -c src/main.c -o obj/main.o $(CFLAGS)
 
-obj/sylvester.o : src/sylvester.c
-	$(CC) -c src/sylvester.c -o obj/sylvester.o $(CFLAGS)
-
-obj/lagrange.o : src/lagrange.c
-	$(CC) -c src/lagrange.c -o obj/lagrange.o $(CFLAGS)
-
-obj/horner.o : src/horner.c
-	$(CC) -c src/horner.c -o obj/horner.o $(CFLAGS)
-
-obj/tools.o : src/tools.c
-	$(CC) -c src/tools.c -o obj/tools.o $(CFLAGS)
+obj/%.o : src/%.c
+	$(CC) -o $@ -c $< $(CFLAGS)
 
 clean :
 	rm -f obj/*.o bin/main
