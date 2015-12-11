@@ -62,6 +62,8 @@ void init_mpzs(mpz_t *nb, int inf, int sup);
 
 void max(int *resultat, ...);
 
+void min(int *resultat, ...);
+
 void print_mpz(mpz_t mpz);
 
 void print_M(mpz_t *M, int size);

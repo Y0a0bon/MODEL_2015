@@ -52,6 +52,27 @@ void max(int *resultat, ...){
 
 
 /**
+ * Return min of nb_param integers
+ * @param resultat Contains the result
+ */
+void min(int *resultat, ...){
+  int param = -1;
+  *resultat = -1;
+  va_list ap;
+
+  va_start(ap, resultat);
+
+  do{
+    if(*resultat > param || *resultat < 0)
+      *resultat=param;
+    param=va_arg(ap, int);
+  }while(param!=NULL);
+
+  va_end(ap);
+}
+
+
+/**
  * Print a mpz_t number
  * @param mpz Mpz number to print
  */

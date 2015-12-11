@@ -277,4 +277,16 @@ void solve(char *path, mpz_t mod1, mpz_t mod2){
     mpz_mul(mod, mod1, mod2);
     /* Recherche des racines */
     find_roots(couples, couples2, size_couples, size_couples2,  mod1, mod2, polP, polQ, deg_PX, deg_QX, deg_P_Y, deg_Q_Y, mod);
+		
+		printf("\n********************\n");
+		int mini;
+		min(&mini, deg_P_Y, deg_Q_Y, NULL);
+		
+		for(i=0; i<mini; i++){
+			mpz_t sub_M[(m+n)*(n-i)];
+			for(j=0; j<(m+n)*(n-i); j++)
+				mpz_init(sub_M[j]);
+			sub_matrix(sub_M, );
+		}
+		
 }
