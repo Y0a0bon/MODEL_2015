@@ -102,9 +102,6 @@ void racines(mpz_t *rac, mpz_t *P, int deg_P, int *nb_racines, mpz_t mod){
   }
   /* printf("sortie:mod=%ld, m=%ld\n", mpz_get_si(mod),mpz_get_si(m)); */
   *nb_racines=k;
-  if(*nb_racines == 0){
-    printf("racine : pas de racines modulo %ld, verifier la borne\n", mpz_get_si(mod));
-  }
   mpz_clear(res_horner);
   mpz_clear(m);
   mpz_clear(m_plus);
@@ -114,7 +111,7 @@ void racines(mpz_t *rac, mpz_t *P, int deg_P, int *nb_racines, mpz_t mod){
 
 /**
  * Recherche exhaustive des racines du systeme de 2 equations a une inconnue
- * @param racines vecteur de taille deg_P ( ou min(deg_P, deg_Q) ) qui contiendra  les racines du systeme. Rempli de -1 en entree.
+ *
  */
 
 void search_roots(int *nb_racines, mpz_t *racines, mpz_t *P, mpz_t *Q, int deg_P, int deg_Q, mpz_t mod){
@@ -136,6 +133,7 @@ void search_roots(int *nb_racines, mpz_t *racines, mpz_t *P, mpz_t *Q, int deg_P
 	
       }
     }
+
 
     mpz_add_ui(i, i, 1);
   }

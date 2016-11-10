@@ -31,18 +31,4 @@ respectivement 1, 2, 1 et 3;
 2 0: coeff du 3e;
 1 0 0 0: coeff du 4e
 
-COMPILATION:
-
-> make
-
-EXECUTION
-
-> bin/main votrefichier.txt modulo1 modulo2
-(modulo1 et modulo2 premiers)
-
-NETTOYAGE
-
-> make clean
-
-
 **************************************************

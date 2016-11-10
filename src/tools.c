@@ -20,6 +20,22 @@ void print_P(mpz_t *polynome, int degre){
 }
 
 
+
+/**
+ * Print polynomial P without 0s
+ * @param P Polynomial to print
+ * @param degree Polynomial's degree
+ */
+void print_P_red(mpz_t *polynome, int degre){
+  int i;
+  for (i=0; i<degre; i++){
+    if(mpz_get_si(polynome[i]))
+      printf("%ld*X^%d + ", mpz_get_si(polynome[i]), degre-i);
+  }
+  printf("%ld\n", mpz_get_si(polynome[i]));
+}
+
+
 /**
  * Init a mpz_t vector to 0
  */
@@ -43,27 +59,6 @@ void max(int *resultat, ...){
 
   do{
     if(*resultat < param)
-      *resultat=param;
-    param=va_arg(ap, int);
-  }while(param!=NULL);
-
-  va_end(ap);
-}
-
-
-/**
- * Return min of nb_param integers
- * @param resultat Contains the result
- */
-void min(int *resultat, ...){
-  int param = -1;
-  *resultat = -1;
-  va_list ap;
-
-  va_start(ap, resultat);
-
-  do{
-    if(*resultat > param || *resultat < 0)
       *resultat=param;
     param=va_arg(ap, int);
   }while(param!=NULL);
@@ -128,7 +123,7 @@ void print_biv(mpz_t **PY, int *degres_PY, int deg_P, mpz_t mod){
   for(j=0; j<deg_P; j++){
     printf("( ");
     for (i=0; i<degres_PY[j]; i++){
-      printf("%ld*X^%d + ", mpz_get_si(PY[j][i]), degres_PY[j]-i);
+      printf("%ld*X^%d+", mpz_get_si(PY[j][i]), degres_PY[j]-i);
     }
     printf("%ld )", mpz_get_si(PY[j][i]));
     printf(" * Y^%d + ", deg_P-j);
@@ -245,4 +240,24 @@ void get_coeff(char **data, mpz_t **pol, int deg_Y, int *deg_X){
       curseur++;
     }
   }
+}
+
+
+/**
+ * Multiply 2 matrix
+ */
+void mpz_mul_mx(mpz_t **res, mpz_t **A, mpz_t **B, int lin_A, int shard, int col_B){
+/*
+  int i, j;
+  mpz_t tmp;
+  mpz_init(tmp);
+  for (i=0; i<lin_A; i++){
+    for (j=0; j<shard; j++){
+	int z;
+	mpz_init(res[i*shard+j]);
+	for (z=0; z<shard; z++)
+	  
+	  P[i][j] += A[i][z] * B[z][j];
+      }
+  }*/
 }

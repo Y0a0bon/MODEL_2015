@@ -47,7 +47,7 @@ void crt(mpz_t res, mpz_t a, mpz_t b, mpz_t mod_a, mpz_t mod_b){
 void find_roots(mpz_t *rac_mod1[2], mpz_t *rac_mod2[2], int nb1, int nb2,  mpz_t mod1, mpz_t mod2, mpz_t **PY, mpz_t **QY, int *degres_PY, int *degresQY, int deg_P, int deg_Q, mpz_t mod){
   
   int i, j, nb_racines=0;
-  mpz_t rx, ry, isroot;
+    mpz_t rx, ry, isroot;
   mpz_inits(rx, ry, isroot, NULL);
 
   for(i=0; i<nb1; i++){
@@ -67,9 +67,9 @@ void find_roots(mpz_t *rac_mod1[2], mpz_t *rac_mod2[2], int nb1, int nb2,  mpz_t
       }
     }
   }
-  
-  printf("%d racines au total\n", nb_racines);
-  
+  /*
+  printf("%d racines au total\n", k);
+   */
   
   
 }

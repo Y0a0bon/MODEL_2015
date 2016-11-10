@@ -194,8 +194,8 @@ void lagrange(mpz_t *res, mpz_t *points, mpz_t *images, int degre, mpz_t mod, mp
   /* Calcul des Li */
   for(i=0; i<=degre; i++){
     mpz_init_set_si(tmp_Li[0][0], 1);
-    /* print_P(tmp_Li[0], 0);*/
-    /*printf("\n********* Calcul de L_%d *********\n", i);*/
+    print_P(tmp_Li[0], 0);
+    printf("\n********* Calcul de L_%d *********\n", i);
     /*printf("--- L_%d initial: ", i);
       print_P(tmp_Li[deg_Li], deg_Li);*/
     /* Quotient des produits (aj-ai) */
@@ -221,8 +221,8 @@ void lagrange(mpz_t *res, mpz_t *points, mpz_t *images, int degre, mpz_t mod, mp
 	/* Construction du polynome (X-aj) */
 	mpz_init_set_si(tmp_poly[0], 1);
 	mpz_init_set(tmp_poly[1], bin_sub);
-	/*printf("--( X - a_%d) : ", j);
-	  print_P(tmp_poly, 1);*/
+	printf("--( X - a_%d) : ", j);
+	print_P(tmp_poly, 1);
 	
 	/* alloc tmp_Li[deg_Li+1] et init*/
 	deg_Li++;
@@ -236,22 +236,22 @@ void lagrange(mpz_t *res, mpz_t *points, mpz_t *images, int degre, mpz_t mod, mp
     }
 
     /* Multiplication de bin par tmp_Li */
-    /*printf("bin = %ld\n", mpz_get_si(bin));*/
+    printf("bin = %ld\n", mpz_get_si(bin));
     for(j=0;j<=deg_Li;j++){
       mpz_mul(tmp_Li[deg_Li][j], tmp_Li[deg_Li][j], bin);
     }
-    /*printf("L_%d FINAL : ", i);*/
-    /*print_P(tmp_Li[deg_Li], degre);*/
+    printf("L_%d FINAL : ", i);
+    print_P(tmp_Li[deg_Li], degre);
     
     /* Ajout de Li a res */
     for(j=0; j<degre+1; j++)
       mpz_add(res[j], res[j], tmp_Li[deg_Li][j]);
-    /*printf("Res = ");
-      print_P(res, degre);*/
+    printf("Res = ");
+    print_P(res, degre);
     /* Remise de bin et des tmp_Li à 1 */
     mpz_set_si(bin, 1);
     deg_Li=0;
-    /*printf("********* FIN L%d *********\n", i); */
+    printf("********* FIN L%d *********\n", i); 
   }
 	
   /* Calcul du modulo*/
@@ -261,20 +261,24 @@ void lagrange(mpz_t *res, mpz_t *points, mpz_t *images, int degre, mpz_t mod, mp
     /* Construction du polynome (X-ai) */
     mpz_set_si(tmp_poly[0], 1);
     mpz_set(tmp_poly[1], bin_sub);
-
+    print_P(tmp_poly, 1);
     if(!i){
       tmp_mod[0]=malloc(2*sizeof(mpz_t));
       mpz_init_set_si(tmp_mod[0][0], 1); /* X */
       mpz_init_set(tmp_mod[0][1], bin_sub); /* -ai */
+      printf("Mod = ");
+      print_P(tmp_mod[0], 1);
     }
     else{
       tmp_mod[i]=malloc((i+2)*sizeof(mpz_t));
       init_mpzs(tmp_mod[i], 0, i+2);
-      mpz_mul_poly(tmp_mod[i], tmp_mod[i-1], tmp_poly, i, 1); 
+      mpz_mul_poly(tmp_mod[i], tmp_mod[i-1], tmp_poly, i, 1);
+      printf("Mod = ");
+      print_P(tmp_mod[i], i+1);
     }
   }
 	
-  /* Copi de tmp_mod dans mod */
+  /* Copie de tmp_mod dans mod */
   for(i=0; i<=degre+1; i++)
     mpz_set(res_mod[i], tmp_mod[degre][i]);
   /* Clear */
