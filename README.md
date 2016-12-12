@@ -1,6 +1,6 @@
-**************************************************
-*               PROJET DE MODEL                  *
-**************************************************
+#######################
+#    MODEL project    #
+#######################
 
 ************************
 Pour instancier 2 polynomes P et Q appartenant a |K[X, Y], creer le fichier comme suit:
