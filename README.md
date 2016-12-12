@@ -21,7 +21,6 @@ Exemple:
 s'ecrit:
 
 * 3 1 2 1 3 3 1 1 0 0 2 0 1 0 0 0
-
 * 3: P de degre 2 en Y;
 * 1 2 1 3: polynomes selon X de degre respectivement 1, 2, 1 et 3;
 * 1 1: coeff du premier polynome en X, coeff de Y^3;
@@ -45,6 +44,3 @@ EXECUTION
 NETTOYAGE
 
   $ make clean
-
-
-**************************************************
